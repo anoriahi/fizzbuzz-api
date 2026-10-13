@@ -1,0 +1,22 @@
+# Environnement de production : docker compose -f compose.yaml -f compose.prod.yaml up -d
+services:
+  php:
+    image: fizzbuzz-api/php:prod
+    build:
+      context: .
+      target: php_prod
+    environment:
+      APP_SECRET: ${APP_SECRET:?APP_SECRET doit être défini}
+      # Pas de mot de passe par défaut en prod
+      DATABASE_URL: mysql://${DB_USER:-fizzbuzz}:${DB_PASSWORD:?DB_PASSWORD doit être défini}@database:3306/${DB_NAME:-fizzbuzz}?serverVersion=11.8.9-MariaDB&charset=utf8mb4
+
+  nginx:
+    image: fizzbuzz-api/nginx:prod
+    build:
+      context: .
+      target: nginx_prod
+
+  database:
+    environment:
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD doit être défini}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD doit être défini}

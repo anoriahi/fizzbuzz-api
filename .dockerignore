@@ -1,0 +1,13 @@
+**/*.log
+**/.DS_Store
+.git/
+.idea/
+.vscode/
+.env
+app/.env.local
+app/.env.*.local
+app/.env.local.php
+app/.phpunit.result.cache
+app/var/
+app/vendor/
+app/public/bundles/
