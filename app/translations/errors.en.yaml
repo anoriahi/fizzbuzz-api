@@ -1,0 +1,5 @@
+validation:
+  failed: "Validation failed"
+parameter:
+  invalid: "One or more parameters are invalid."
+  unknown: "One or more parameters are unknown."
