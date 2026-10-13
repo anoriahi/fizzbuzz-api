@@ -1,0 +1,49 @@
+services:
+  php:
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://${DB_USER:-fizzbuzz}:${DB_PASSWORD:-fizzbuzz}@database:3306/${DB_NAME:-fizzbuzz}?serverVersion=11.8.9-MariaDB&charset=utf8mb4
+    healthcheck:
+      test: ["CMD", "docker-healthcheck"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 2s
+
+  nginx:
+    restart: unless-stopped
+    depends_on:
+      php:
+        condition: service_healthy
+        restart: true
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+
+  database:
+    image: mariadb:11.8
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_nopad_bin
+      - --character-set-collations=utf8mb4=utf8mb4_nopad_bin
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-fizzbuzz}
+      MARIADB_USER: ${DB_USER:-fizzbuzz}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-fizzbuzz}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    volumes:
+      - database_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 2s
+
+volumes:
+  database_data:
