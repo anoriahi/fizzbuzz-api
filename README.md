@@ -139,3 +139,14 @@ docker compose -f compose.yaml -f compose.prod.yaml exec php bin/console doctrin
 `make prod-up` recrée uniquement les conteneurs dont l'image a changé ; les données MariaDB sont conservées dans le volume `database_data`.
 
 Pour arrêter : `make prod-down`.
+
+## Documentation de l'API
+
+La documentation interactive (NelmioApiDocBundle, interface Stoplight Elements) est servie à la racine de l'API :
+
+| URL                              | Contenu                              |
+| -------------------------------- | ------------------------------------ |
+| <http://localhost:8080>          | Documentation interactive            |
+| <http://localhost:8080/doc.json> | Spécification OpenAPI au format JSON |
+
+En PROD, remplacer `8080` par la valeur de `HTTP_PORT`.
